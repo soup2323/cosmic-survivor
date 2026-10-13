@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Cosmic Survivor</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Yandex Games SDK -->
+    <script src="https://yandex.ru/games/sdk/v2"></script>
+</head>
+<body>
+    <!-- Главное меню -->
+    <div id="main-menu" class="screen active">
+        <div class="menu-background"></div>
+        <div class="menu-content">
+            <div class="game-title">
+                <span class="title-cosmic">COSMIC</span>
+                <span class="title-survivor">SURVIVOR</span>
+            </div>
+            <div class="subtitle">Выживи в космосе</div>
+            
+            <div class="menu-stats" id="menu-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Лучший счёт:</span>
+                    <span class="stat-value" id="best-score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Всего игр:</span>
+                    <span class="stat-value" id="total-games">0</span>
+                </div>
+            </div>
+
+            <button class="menu-btn play-btn" id="play-btn">
+                <span class="btn-icon">▶</span>
+                <span>ИГРАТЬ</span>
+            </button>
+            
+            <button class="menu-btn shop-btn" id="shop-btn">
+                <span class="btn-icon">🛒</span>
+                <span>МАГАЗИН</span>
+            </button>
+
+            <button class="menu-btn leaderboard-btn" id="leaderboard-btn">
+                <span class="btn-icon">🏆</span>
+                <span>РЕЙТИНГ</span>
+            </button>
+        </div>
+
+        <div class="menu-particles" id="menu-particles"></div>
+    </div>
+
+    <!-- Выбор персонажа -->
+    <div id="character-select" class="screen">
+        <div class="screen-title">ВЫБЕРИ КОРАБЛЬ</div>
+        <div class="characters-grid" id="characters-grid"></div>
+        <button class="menu-btn back-btn" id="back-to-menu">← НАЗАД</button>
+    </div>
+
+    <!-- Игровой экран -->
+    <div id="game-screen" class="screen">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud">
+            <div class="hud-top">
+                <div class="hud-left">
+                    <div class="health-bar-container">
+                        <div class="health-bar" id="health-bar"></div>
+                        <span class="health-text" id="health-text">100/100</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" id="xp-bar"></div>
+                        <span class="xp-text" id="xp-text">Lv.1</span>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <div class="score-display">
+                        <span class="score-label">СЧЁТ</span>
+                        <span class="score-value" id="score-value">0</span>
+                    </div>
+                    <div class="time-display">
+                        <span class="time-label">ВРЕМЯ</span>
+                        <span class="time-value" id="time-value">0:00</span>
+                    </div>
+                    <div class="kill-display">
+                        <span class="kill-label">УБИЙСТВА</span>
+                        <span class="kill-value" id="kill-value">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hud-bottom">
+                <div class="weapons-display" id="weapons-display"></div>
+                <button class="pause-btn" id="pause-btn">⏸</button>
+            </div>
+        </div>
+
+        <!-- Мобильные контролы -->
+        <div id="mobile-controls">
+            <div class="joystick-container" id="joystick-container">
+                <div class="joystick-base" id="joystick-base">
+                    <div class="joystick-stick" id="joystick-stick"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран выбора улучшения -->
+    <div id="upgrade-screen" class="screen overlay">
+        <div class="upgrade-panel">
+            <div class="upgrade-title">УЛУЧШЕНИЕ!</div>
+            <div class="upgrade-subtitle">Выберите одно улучшение</div>
+            <div class="upgrade-options" id="upgrade-options"></div>
+        </div>
+    </div>
+
+    <!-- Пауза -->
+    <div id="pause-screen" class="screen overlay">
+        <div class="pause-panel">
+            <div class="pause-title">ПАУЗА</div>
+            <div class="pause-stats">
+                <div>Время: <span id="pause-time">0:00</span></div>
+                <div>Счёт: <span id="pause-score">0</span></div>
+                <div>Убийства: <span id="pause-kills">0</span></div>
+            </div>
+            <button class="menu-btn" id="resume-btn">▶ ПРОДОЛЖИТЬ</button>
+            <button class="menu-btn" id="quit-btn">✕ ВЫЙТИ</button>
+        </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameover-screen" class="screen overlay">
+        <div class="gameover-panel">
+            <div class="gameover-title">ИГРА ОКОНЧЕНА</div>
+            <div class="gameover-stats" id="gameover-stats"></div>
+            <div class="gameover-buttons">
+                <button class="menu-btn" id="retry-btn">🔄 ЗАНОВО</button>
+                <button class="menu-btn" id="ad-revive-btn">📺 ВОЗРОДИТЬСЯ (РЕКЛАМА)</button>
+                <button class="menu-btn" id="home-btn">🏠 МЕНЮ</button>
+            </div>
+        </div>
+    </div>
+    <!-- Рейтинг (Таблица лидеров) -->
+    <div id="leaderboard-screen" class="screen overlay">
+        <div class="leaderboard-panel">
+            <div class="screen-title">🏆 ТОП ВЫЖИВШИХ</div>
+            <div class="leaderboard-list" id="leaderboard-list">
+                <!-- Загружается автоматически -->
+            </div>
+            <button class="menu-btn back-btn" id="back-from-leaderboard">← НАЗАД</button>
+        </div>
+    </div>
+    <!-- Магазин -->
+    <div id="shop-screen" class="screen">
+        <div class="screen-title">МАГАЗИН</div>
+        <div class="shop-coins">
+            <span>💰</span>
+            <span id="shop-coins-value">0</span>
+        </div>
+        <div class="shop-grid" id="shop-grid"></div>
+        <button class="menu-btn back-btn" id="back-from-shop">← НАЗАД</button>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/background.js"></script>
+    <script src="js/weapons.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/powerups.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/yandex-sdk.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
